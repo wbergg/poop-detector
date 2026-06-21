@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local `wrangler dev`. These map to secrets in production.
+TELEGRAM_BOT_TOKEN="123456:ABC-your-bot-token"
+WEBHOOK_SECRET="some-long-random-string"
+ALERT_CHAT_ID="-123456789"

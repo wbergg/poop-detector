@@ -1,0 +1,11 @@
+node_modules/
+.wrangler/
+.dev.vars
+dist/
+*.log
+
+# Local secrets / account-specific config — commit the *.example templates instead
+wrangler.jsonc
+package.json
+package-lock.json
+.DS_Store

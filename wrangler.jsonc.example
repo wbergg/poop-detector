@@ -1,0 +1,39 @@
+{
+  // Template — copy to `wrangler.jsonc` and fill in the placeholders below.
+  // Cloudflare Worker: poop-detector (Bathroom VOC Monitor watcher)
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "poop-detector",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-04",
+  "observability": {
+    "enabled": true
+  },
+  // Serve only on a custom domain (the zone must be in this CF account).
+  // custom_domain:true makes wrangler manage the DNS record + cert for it.
+  // To use the free *.workers.dev URL instead, delete these two keys.
+  "workers_dev": false,
+  "routes": [
+    { "pattern": "poop-detector.example.com", "custom_domain": true }
+  ],
+  // Per-minute scrape
+  "triggers": {
+    "crons": ["* * * * *"]
+  },
+  // Secrets — set with `wrangler secret put <NAME>` (values never live here):
+  //   TELEGRAM_BOT_TOKEN, WEBHOOK_SECRET, ALERT_CHAT_ID
+  // Non-secret config below. Anything here is committed to git.
+  "vars": {
+    "SOURCE_URL": "http://rapevan.se:20000",
+    "THRESHOLD": "40",
+    "REARM_MARGIN": "2",
+    "RETENTION_HOURS": "72"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "poop-detector",
+      // From `wrangler d1 create poop-detector`
+      "database_id": "<your-d1-database-id>"
+    }
+  ]
+}
