@@ -23,7 +23,13 @@
   //   TELEGRAM_BOT_TOKEN, WEBHOOK_SECRET, ALERT_CHAT_ID
   // Non-secret config below. Anything here is committed to git.
   "vars": {
-    "SOURCE_URL": "http://rapevan.se:20000",
+    // One or more sensors, as a JSON array. Each entry:
+    //   id        — short key used in storage, alert state, and commands (e.g. /poop home2)
+    //   label     — human name shown in Telegram messages
+    //   url       — sensor base URL (the Worker appends /json)
+    //   threshold — optional per-sensor voc_index cutoff; falls back to THRESHOLD
+    // (Legacy single-sensor deploys may instead set "SOURCE_URL"; SOURCES wins if both are set.)
+    "SOURCES": "[{\"id\":\"main\",\"label\":\"Bathroom\",\"url\":\"http://sensor-one.example.com:20000\",\"threshold\":40},{\"id\":\"home2\",\"label\":\"Home 2\",\"url\":\"http://sensor-two.example.com:10000\",\"threshold\":40}]",
     "THRESHOLD": "40",
     "REARM_MARGIN": "2",
     "RETENTION_HOURS": "72"
