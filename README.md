@@ -20,8 +20,7 @@ sensors emit `voc_index`, `voc_avg_5min`/`voc_delta`/`voc_raw`, a sustained
 `last_event_s`, `uptime_s`, `sht_ok`). The Worker **normalizes both** into one
 row shape — fields a sensor doesn't provide are stored as `NULL` — so you do
 **not** need to reflash anything to match. The alert fires on the sensor's
-`alarm` flag when it emits one, otherwise on the rich sensor's `toilet_like`
-flag, and each row keeps whichever raw fields its sensor sent.
+`alarm` flag, and each row keeps whichever raw fields its sensor sent.
 
 ## What it does
 
@@ -31,8 +30,8 @@ flag, and each row keeps whichever raw fields its sensor sent.
   per-sensor alert checks → delete rows older than the retention window. Failed
   scrapes and `warmup` readings are skipped silently (logged only).
 - **Toilet alert (edge-trigger + re-arm), per sensor:** a Telegram message the
-  moment a sensor's alert flag turns **true** (`alarm` when the sensor emits one,
-  else the rich sensor's `toilet_like`), then silent until it clears and re-arms.
+  moment a sensor's `alarm` flag turns **true**, then silent until it clears
+  and re-arms.
   Tracked per sensor under the `toilet_armed:<id>` state key,
   so sensors alert independently. The message names the sensor and reports the
   current `voc_index` and `label`.
@@ -106,8 +105,8 @@ group chat id is stored as the `ALERT_CHAT_ID` secret (not committed). Endpoints
 > Legacy single-sensor deploys can still set `SOURCE_URL` instead of `SOURCES`
 > (it's used only when `SOURCES` is unset, as one source with id `main`).
 
-> The per-sensor alert flag (`toilet_like` on the rich sensor, `alarm` on the
-> simple one) is the direct poop signal and fires regardless of the threshold.
+> The per-sensor `alarm` flag is the direct poop signal and fires regardless of
+> the threshold.
 > `THRESHOLD` only sets the NOPE/IFFY/SAFE cutoffs for `/safe` and the figures in
 > `/status`, `/threshold`, and `/streak`. Recalibrate per sensor from
 > `/stats <id> 48` once you've gathered a day or two.

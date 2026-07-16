@@ -15,7 +15,7 @@
  *     uptime_s, sht_ok).
  * fetchReading() normalizes both into one Reading shape; fields a given sensor
  * doesn't provide are stored as NULL. The alert fires on the sensor's `alarm`
- * flag when it emits one, otherwise on the rich sensor's `toilet_like` flag.
+ * flag.
  */
 
 export interface Env {
@@ -51,8 +51,8 @@ interface Reading {
   warmup: boolean;
 
   // Alarm / event tracking (simple sensor; NULL when the sensor omits them).
-  // `alarm` is the sustained alarm output and, when present, is what the alert
-  // fires on (see evaluateToiletAlert).
+  // `alarm` is the sustained alarm output the alert fires on (see
+  // evaluateToiletAlert).
   alarm: boolean | null;
   alarm_state: string | null;
   event_count: number | null;
@@ -218,14 +218,12 @@ async function storeReading(env: Env, r: Reading, ts: number): Promise<void> {
 
 /**
  * Edge-trigger toilet alert, per source: one Telegram message when the sensor's
- * alert flag turns on, then silent until it clears and re-arms. The flag is the
- * sensor's sustained `alarm` when it emits one, otherwise the rich sensor's
- * `toilet_like` flag. State is tracked under a per-source `toilet_armed:<id>` key
- * so sensors alert independently.
+ * sustained `alarm` flag turns on, then silent until it clears and re-arms.
+ * State is tracked under a per-source `toilet_armed:<id>` key so sensors alert
+ * independently.
  */
 async function evaluateToiletAlert(env: Env, source: Source, reading: Reading, ts: number): Promise<void> {
-  // Prefer `alarm` (only null when the sensor doesn't emit it); else toilet_like.
-  const trigger = reading.alarm ?? reading.toilet_like;
+  const trigger = reading.alarm === true;
   const armKey = `toilet_armed:${source.id}`;
   const armed = await getArmed(env, armKey);
 
